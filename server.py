@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify,render_template, send_from_directory
 from flask_cors import CORS
 from mjrp_implementation import main
 import os
@@ -22,7 +22,7 @@ def favicon():
 # Serve index.html for root URL
 @app.route('/')
 def index():
-    return send_from_directory('static', 'index.html')
+    return render_template('index.html')
 
 # for testing purposes only
 @app.route('/dummy', methods=['GET'])
