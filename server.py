@@ -5,6 +5,8 @@ import os
 
 app = Flask(__name__)
 
+app = Flask(__name__, static_folder='C:\Users\Dell\UsersDellSAAFRT\static')
+
 @app.route('/calculate', methods=['POST'])
 def calculate():
     data = request.get_json()
@@ -23,6 +25,8 @@ def favicon():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+#for the graphical user interfaces
 
 # for testing purposes only
 @app.route('/dummy', methods=['GET'])
