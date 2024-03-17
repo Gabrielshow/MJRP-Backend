@@ -5,15 +5,17 @@ import os
 
 app = Flask(__name__)
 
-app = Flask(__name__, static_folder='C:\Users\Dell\UsersDellSAAFRT\static')
+app = Flask(__name__, static_folder='C:/Users/Dell/UsersDellSAAFRT/static')
+
+# server.py
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
     data = request.get_json()
     # Extract parameters from JSON data
-    # Call your main function with the parameters
-    result = main(data['parameters'])
+    result = calculate_cost(data['parameters'])
     return jsonify(result=result)
+
 
 # Serve favicon
 @app.route('/favicon.ico')
