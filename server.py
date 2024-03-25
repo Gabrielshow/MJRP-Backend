@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify,render_template, send_from_directory
 from flask_cors import CORS
-from mjrp_implementation import main
+from mjrp import main
 import os
 
 app = Flask(__name__)
@@ -13,7 +13,7 @@ app = Flask(__name__, static_folder='C:/Users/Dell/UsersDellSAAFRT/static')
 def calculate():
     data = request.get_json()
     # Extract parameters from JSON data
-    result = calculate_cost(data['parameters'])
+    result = main.calculate_cost(data['parameters'])
     return jsonify(result=result)
 
 
