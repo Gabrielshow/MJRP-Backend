@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify,render_template, send_from_directory
 from flask_cors import CORS
-from mjrp import main
+from mjrp import calculate_cost
 import os
+import json
 
 app = Flask(__name__)
 
@@ -12,9 +13,29 @@ app = Flask(__name__, static_folder='C:/Users/Dell/UsersDellSAAFRT/static')
 @app.route('/calculate', methods=['POST'])
 def calculate():
     data = request.get_json()
-    # Extract parameters from JSON data
-    result = main.calculate_cost(data['parameters'])
-    return jsonify(result=result)
+    print(data)
+    if not data or 'parameters' not in data:
+        return jsonify({"error": "No JSON data provided"}), 400
+
+    parameters = data['parameters']
+    print(parameters)
+    # Extract all parameters into a dictionary
+    extracted_params = {}
+    for param in parameters:
+        param_name = param['name']
+        param_value = param['value']
+        # Ensure param_value is always a list
+        if not isinstance(param_value, list):
+            param_value = [param_value]  # Convert single value to list
+        extracted_params[param_name] = param_value
+
+    # Call the calculate_cost function with the extracted parameters
+    print(extracted_params)
+    result = calculate_cost(extracted_params)
+
+    return jsonify(result), 200
+
+
 
 
 # Serve favicon

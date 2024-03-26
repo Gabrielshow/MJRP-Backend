@@ -7,12 +7,12 @@ buyer_num = 2
 
 
 # Given parameters
-S = 1000	# Major setup cost
-s = [[350, 300, 320, 400, 400, 300], [250, 200, 300, 420, 450, 400]]  # Minor setup cost when item i is included in a group replenishment in buyer j
-v = [50, 50, 50, 50, 50, 50]  # Unit variable cost of item i
-r = [5, 5, 5, 5, 5, 5]  # Inventory carrying charge per unit time
-demand = [[10000, 5000, 3000, 1000, 600, 200], [8000, 1000, 12000, 6000, 4500, 100]]	#demand per unit time
-k_ij = [[2, 2, 2, 2, 2, 2], [2, 2, 2, 2, 2, 2]] 
+# S = 1000	# Major setup cost
+# s = [[350, 300, 320, 400, 400, 300], [250, 200, 300, 420, 450, 400]]  # Minor setup cost when item i is included in a group replenishment in buyer j
+# v = [50, 50, 50, 50, 50, 50]  # Unit variable cost of item i
+# r = [5, 5, 5, 5, 5, 5]  # Inventory carrying charge per unit time
+# demand = [[10000, 5000, 3000, 1000, 600, 200], [8000, 1000, 12000, 6000, 4500, 100]]	#demand per unit time
+# k_ij = [[2, 2, 2, 2, 2, 2], [2, 2, 2, 2, 2, 2]] 
 
 # Function to compute cycle time
 def cycle_time(k, t):
@@ -174,27 +174,45 @@ def find_cycle_time_min():
     Tmin = math.sqrt((2 * var_1)/ var_2)
     return round(Tmin)
 
+def calculate_cost(parameters):
+    # Initialize variables to store extracted parameters
+    demand = None
+    s = None
+    k_ij = None
+    S = None
+    # Add other parameters as needed
+
+    # Iterate over the list of parameters
+    for param_name, param_value in parameters.items():  # Use items() to iterate over key-value pairs
+        if param_name == 'Demand':
+            demand = param_value
+        elif param_name == 'Holding Cost':
+            s = param_value
+        elif param_name == 'Time Multipliers':
+            k_ij = param_value
+        elif param_name == 'Major Setup Cost':
+            S = param_value
+        # Add other parameters as needed
+
+    # Check if all required parameters are extracted
+    if demand is None or s is None or k_ij is None or S is None:
+        return {"error": "Required parameters not provided"}
+
+    # Run Goyal algorithm with the provided parameters
+    T_p, k_ijq = goyal_algorithm(demand, k_ij)
+
+    # Use the optimal T_p and k_ijq to compute the optimal order quantity Q
+    Q = order_quantity(demand, T_p)
+
+    # Compute total relevant cost
+    C = total_annual_cost(Q, T_p)
+
+    return {"success": "Parameters extracted successfully"}
+
 # Main function
 def main():
     # Run Goyal algorithm
     # mjrp.py
-
-    def calculate_cost(parameters):
-    # Extract parameters from the passed dictionary
-        demand = parameters.get('demand', [[10000, 5000, 3000, 1000, 600, 200], [8000, 1000, 12000, 6000, 4500, 100]])
-        s = parameters.get('s', [[350, 300, 320, 400, 400, 300], [250, 200, 300, 420, 450, 400]])
-        # Add other parameters as needed
-
-        # Run Goyal algorithm with the provided parameters
-        T_p, k_ijq = goyal_algorithm(demand, k_ij)
-
-        # Use the optimal T_p and k_ijq to compute the optimal order quantity Q
-        Q = order_quantity(demand, T_p)
-
-        # Compute total relevant cost
-        C = total_annual_cost(Q, T_p)
-
-        return {"Optimal cycle time T_p": T_p, "Optimal order quantity Q": Q, "Total relevant cost C": C}
 
     T_p, k_ijq = goyal_algorithm(demand, k_ij)
 
